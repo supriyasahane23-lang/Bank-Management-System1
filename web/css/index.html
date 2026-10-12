@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexBank - Digital Banking Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="brand">
+                <div class="brand-icon">🏦</div>
+                <span>ApexBank</span>
+            </a>
+            <div class="nav-links">
+                <button class="nav-btn outline" onclick="openModal('adminLoginModal')">🛡️ Admin Portal</button>
+                <button class="nav-btn outline" onclick="openModal('loginModal')">Customer Sign In</button>
+                <button class="nav-btn primary" onclick="openModal('registerModal')">Open Account</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main class="container">
+        <section class="hero">
+            <div class="hero-badge">⚡ Full-Stack Java & MySQL Banking Engine</div>
+            <h1 class="hero-title">Banking Made Simple,<br>Secure & Real-Time.</h1>
+            <p class="hero-subtitle">
+                Experience seamless account management, atomic fund transfers, instant deposits and withdrawals powered by Core Java, RESTful APIs, and MySQL.
+            </p>
+            <div class="hero-actions">
+                <button class="btn btn-primary" onclick="openModal('loginModal')">🔐 Customer Login</button>
+                <button class="btn btn-secondary" onclick="openModal('registerModal')">✨ Open New Account</button>
+                <button class="btn btn-secondary" onclick="openModal('adminLoginModal')">🛡️ Admin Console</button>
+            </div>
+
+            <!-- Demo Credentials Quick Selector -->
+            <div class="demo-box">
+                <div class="demo-item" style="cursor:pointer;" onclick="fillDemoUser('1001001001', '1234')">
+                    <div class="demo-title">Customer Demo 1 (Click to Fill)</div>
+                    <div class="demo-desc">Account: <strong>1001001001</strong><br>PIN: <strong>1234</strong> ($5,000)</div>
+                </div>
+                <div class="demo-item" style="cursor:pointer;" onclick="fillDemoUser('1001001002', '1234')">
+                    <div class="demo-title">Customer Demo 2 (Click to Fill)</div>
+                    <div class="demo-desc">Account: <strong>1001001002</strong><br>PIN: <strong>1234</strong> ($12,500)</div>
+                </div>
+                <div class="demo-item" style="cursor:pointer;" onclick="openModal('adminLoginModal')">
+                    <div class="demo-title">Administrator Portal</div>
+                    <div class="demo-desc">User: <strong>admin</strong><br>Pass: <strong>admin123</strong></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Showcase -->
+        <section class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">💸</div>
+                <h3 class="feature-title">Atomic Fund Transfers</h3>
+                <p class="feature-desc">Transfers protected by database transaction rollbacks (ACID), ensuring funds are never lost midway.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">Live Transaction Ledger</h3>
+                <p class="feature-desc">Track every deposit, withdrawal, and transfer with real-time running balances and timestamps.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3 class="feature-title">PIN & Security Control</h3>
+                <p class="feature-desc">All withdrawals and transfers require customer PIN verification with instant account freeze capabilities.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3 class="feature-title">Executive Admin Audit</h3>
+                <p class="feature-desc">Admins can track overall bank reserves, manage customer accounts, and audit all live operations.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Customer Login Modal -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Customer Login</h2>
+                <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
+            </div>
+            <form id="loginForm" onsubmit="handleCustomerLogin(event)">
+                <div class="form-group">
+                    <label class="form-label" for="loginIdentifier">Account Number or Email</label>
+                    <input type="text" id="loginIdentifier" name="identifier" class="form-control" placeholder="e.g. 1001001001 or john@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="loginPin">Security PIN</label>
+                    <input type="password" id="loginPin" name="pin" class="form-control" placeholder="4-digit PIN" maxlength="6" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('loginModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Sign In</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Open Account Modal -->
+    <div id="registerModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Open New Bank Account</h2>
+                <button class="modal-close" onclick="closeModal('registerModal')">&times;</button>
+            </div>
+            <form onsubmit="handleCustomerRegister(event)">
+                <div class="form-group">
+                    <label class="form-label" for="regFullName">Full Legal Name</label>
+                    <input type="text" id="regFullName" name="fullName" class="form-control" placeholder="e.g. Sarah Jenkins" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="regEmail">Email Address</label>
+                        <input type="email" id="regEmail" name="email" class="form-control" placeholder="sarah@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="regPhone">Phone Number</label>
+                        <input type="tel" id="regPhone" name="phone" class="form-control" placeholder="9876543210" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="regAccountType">Account Type</label>
+                        <select id="regAccountType" name="accountType" class="form-control">
+                            <option value="Savings">Savings Account</option>
+                            <option value="Current">Current Account</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="regInitialDeposit">Initial Deposit ($)</label>
+                        <input type="number" id="regInitialDeposit" name="initialDeposit" class="form-control" placeholder="100.00" min="0" step="0.01">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="regPin">Create Security PIN (4-6 digits)</label>
+                    <input type="password" id="regPin" name="pin" class="form-control" placeholder="e.g. 4321" minlength="4" maxlength="6" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('registerModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🛡️ Admin Authentication</h2>
+                <button class="modal-close" onclick="closeModal('adminLoginModal')">&times;</button>
+            </div>
+            <form onsubmit="handleAdminLogin(event)">
+                <div class="form-group">
+                    <label class="form-label" for="adminUsername">Admin Username</label>
+                    <input type="text" id="adminUsername" name="username" class="form-control" value="admin" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="adminPassword">Admin Password</label>
+                    <input type="password" id="adminPassword" name="password" class="form-control" value="admin123" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('adminLoginModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Access Admin Console</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 ApexBank Management System | Built with Core Java, MySQL, HTML5, CSS3 & JavaScript</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

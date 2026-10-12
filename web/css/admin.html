@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control Center - ApexBank</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="admin.html" class="brand">
+                <div class="brand-icon">🛡️</div>
+                <span>ApexBank Admin Portal</span>
+            </a>
+            <div class="nav-links">
+                <span style="color: var(--text-muted); font-size: 0.9rem;">
+                    Admin: <strong id="adminName" style="color: white;">Administrator</strong>
+                </span>
+                <button class="nav-btn danger" onclick="logoutAdmin()">Sign Out</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Admin Header -->
+        <div class="dashboard-header">
+            <div>
+                <h1 class="welcome-title">System Control Center</h1>
+                <p class="welcome-subtitle">Real-time overview of bank reserves, account lifecycle, and transaction logs.</p>
+            </div>
+            <div>
+                <button class="btn btn-secondary" onclick="initAdminDashboard()">🔄 Refresh All Data</button>
+            </div>
+        </div>
+
+        <!-- Bank Statistics Grid -->
+        <div class="stats-grid">
+            <div class="stat-card featured">
+                <div class="stat-label">Total Bank Reserve</div>
+                <div class="stat-value" id="statTotalReserve">$0.00</div>
+                <div class="stat-sub">Cumulative vault balance</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Total Accounts</div>
+                <div class="stat-value" id="statTotalAccounts">0</div>
+                <div class="stat-sub">Registered accounts</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Active Accounts</div>
+                <div class="stat-value amount-pos" id="statActiveAccounts">0</div>
+                <div class="stat-sub">Operating normally</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Total Transactions</div>
+                <div class="stat-value" id="statTotalTransactions">0</div>
+                <div class="stat-sub">Audit trail count</div>
+            </div>
+        </div>
+
+        <!-- Accounts Management Table -->
+        <div class="table-container">
+            <div class="section-heading">
+                <span>Customer Accounts Directory</span>
+                <input type="text" id="searchAccountInput" class="form-control" style="max-width: 300px; padding: 0.5rem 0.85rem;" placeholder="Search name, account #, email..." oninput="filterAccounts()">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Account #</th>
+                        <th>Account Holder</th>
+                        <th>Contact</th>
+                        <th>Type</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                        <th>Management Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adminAccountsTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align:center; padding: 2rem; color: var(--text-muted);">
+                            Loading registered accounts...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Global Transactions Audit Log -->
+        <div class="table-container">
+            <div class="section-heading">
+                <span>System-Wide Transaction Audit Log</span>
+                <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal;">Latest 100 system operations</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Account #</th>
+                        <th>Operation Type</th>
+                        <th>Memo / Details</th>
+                        <th>Amount</th>
+                        <th>Post-Tx Balance</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTransactionsTableBody">
+                    <tr>
+                        <td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-muted);">
+                            Loading system transaction history...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 ApexBank Administrative Core | System Monitoring & Governance</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initAdminDashboard();
+        });
+    </script>
+</body>
+</html>

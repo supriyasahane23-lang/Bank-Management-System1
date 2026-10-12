@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard - ApexBank</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard.html" class="brand">
+                <div class="brand-icon">🏦</div>
+                <span>ApexBank</span>
+            </a>
+            <div class="nav-links">
+                <span style="color: var(--text-muted); font-size: 0.9rem;">
+                    Account: <strong class="user-account" style="color:white;">-</strong>
+                </span>
+                <span id="userStatusBadge" class="badge badge-active">ACTIVE</span>
+                <button class="nav-btn danger" onclick="logoutCustomer()">Sign Out</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div>
+                <h1 class="welcome-title">Welcome back, <span class="user-name">Customer</span></h1>
+                <p class="welcome-subtitle">Here is what is happening with your <span class="user-type">Savings</span> account today.</p>
+            </div>
+            <div>
+                <button class="btn btn-secondary" onclick="refreshAccountData()">🔄 Refresh Data</button>
+            </div>
+        </div>
+
+        <!-- Account Summary Cards -->
+        <div class="stats-grid">
+            <div class="stat-card featured">
+                <div class="stat-label">
+                    <span>Available Balance</span>
+                    <button id="eyeIcon" style="background:none; border:none; color:white; cursor:pointer; font-size:1.1rem;" onclick="toggleBalanceVisibility()" title="Toggle Balance Visibility">👁️</button>
+                </div>
+                <div class="stat-value" id="accountBalance">$0.00</div>
+                <div class="stat-sub">Account #<span class="user-account">-</span></div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Total Deposits / Credits</div>
+                <div class="stat-value amount-pos" id="totalMoneyIn">+$0.00</div>
+                <div class="stat-sub">Cumulative credits</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Total Withdrawals / Debits</div>
+                <div class="stat-value amount-neg" id="totalMoneyOut">-$0.00</div>
+                <div class="stat-sub">Cumulative debits</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Account Type</div>
+                <div class="stat-value" style="font-size: 1.6rem; margin-top: 1rem;"><span class="user-type">Savings</span></div>
+                <div class="stat-sub">Apex Standard Member</div>
+            </div>
+        </div>
+
+        <!-- Quick Banking Actions -->
+        <div class="actions-card">
+            <h2 class="section-heading">Quick Banking Actions</h2>
+            <div class="action-buttons">
+                <button class="action-btn" onclick="openModal('depositModal')">
+                    <span class="action-icon">📥</span>
+                    <span>Deposit Money</span>
+                </button>
+                <button class="action-btn" onclick="openModal('withdrawModal')">
+                    <span class="action-icon">📤</span>
+                    <span>Withdraw Money</span>
+                </button>
+                <button class="action-btn" onclick="openModal('transferModal')">
+                    <span class="action-icon">🔄</span>
+                    <span>Transfer Funds</span>
+                </button>
+                <button class="action-btn" onclick="openModal('changePinModal')">
+                    <span class="action-icon">🔑</span>
+                    <span>Security PIN</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Transactions History -->
+        <div class="table-container">
+            <div class="section-heading">
+                <span>Recent Transactions</span>
+                <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal;">Latest 50 entries</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Description / Reference</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Balance After</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionsTableBody">
+                    <tr>
+                        <td colspan="5" style="text-align:center; padding: 2rem; color: var(--text-muted);">
+                            Loading transactions...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Deposit Modal -->
+    <div id="depositModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">📥 Deposit Funds</h2>
+                <button class="modal-close" onclick="closeModal('depositModal')">&times;</button>
+            </div>
+            <form onsubmit="handleDeposit(event)">
+                <div class="form-group">
+                    <label class="form-label" for="depAmount">Deposit Amount ($)</label>
+                    <input type="number" id="depAmount" name="amount" class="form-control" placeholder="e.g. 500.00" min="1" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="depDesc">Note / Description (Optional)</label>
+                    <input type="text" id="depDesc" name="description" class="form-control" placeholder="e.g. Salary / Cash deposit">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('depositModal')">Cancel</button>
+                    <button type="submit" class="btn btn-success">Confirm Deposit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div id="withdrawModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">📤 Withdraw Funds</h2>
+                <button class="modal-close" onclick="closeModal('withdrawModal')">&times;</button>
+            </div>
+            <form onsubmit="handleWithdraw(event)">
+                <div class="form-group">
+                    <label class="form-label" for="withAmount">Withdrawal Amount ($)</label>
+                    <input type="number" id="withAmount" name="amount" class="form-control" placeholder="e.g. 200.00" min="1" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="withPin">Enter Security PIN</label>
+                    <input type="password" id="withPin" name="pin" class="form-control" placeholder="Enter your PIN" maxlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="withDesc">Note / Description (Optional)</label>
+                    <input type="text" id="withDesc" name="description" class="form-control" placeholder="e.g. ATM withdrawal">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('withdrawModal')">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Confirm Withdrawal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Transfer Modal -->
+    <div id="transferModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🔄 Fund Transfer</h2>
+                <button class="modal-close" onclick="closeModal('transferModal')">&times;</button>
+            </div>
+            <form onsubmit="handleTransfer(event)">
+                <div class="form-group">
+                    <label class="form-label" for="transTo">Recipient Account Number</label>
+                    <input type="text" id="transTo" name="toAccount" class="form-control" placeholder="e.g. 1001001002" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="transAmount">Transfer Amount ($)</label>
+                    <input type="number" id="transAmount" name="amount" class="form-control" placeholder="e.g. 150.00" min="1" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="transPin">Enter Your Security PIN</label>
+                    <input type="password" id="transPin" name="pin" class="form-control" placeholder="Enter your PIN" maxlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="transDesc">Transfer Remark / Note</label>
+                    <input type="text" id="transDesc" name="description" class="form-control" placeholder="e.g. Rent payment">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('transferModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Send Transfer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change PIN Modal -->
+    <div id="changePinModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🔑 Change Security PIN</h2>
+                <button class="modal-close" onclick="closeModal('changePinModal')">&times;</button>
+            </div>
+            <form onsubmit="handleChangePin(event)">
+                <div class="form-group">
+                    <label class="form-label" for="pinOld">Current PIN</label>
+                    <input type="password" id="pinOld" name="oldPin" class="form-control" placeholder="Old PIN" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="pinNew">New PIN (4-6 digits)</label>
+                    <input type="password" id="pinNew" name="newPin" class="form-control" placeholder="New PIN" minlength="4" maxlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="pinConfirm">Confirm New PIN</label>
+                    <input type="password" id="pinConfirm" name="confirmPin" class="form-control" placeholder="Confirm New PIN" minlength="4" maxlength="6" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('changePinModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update PIN</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 ApexBank Management System | Secure Banking Portal</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        // Check session and load dashboard data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = getCurrentUser();
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            renderDashboard(user);
+            refreshAccountData();
+        });
+    </script>
+</body>
+</html>
